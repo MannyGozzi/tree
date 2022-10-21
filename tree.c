@@ -145,6 +145,7 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
             print_item_with_formatting(entries->content[i], level, TYPE_FILE, show_hidden, show_size, file_size);
         }
     }
+    destroy_array_list(entries);
 }
 
 int main(int argc, char *argv[])
@@ -154,5 +155,6 @@ int main(int argc, char *argv[])
     validate_params(argc, argv);
     get_param_flags(dir_name, &show_hidden, &show_size, argc, argv);
     print_directory_r(argv[DIR_NAME_POS], 0, show_hidden, show_size, get_entry_size(argv[DIR_NAME_POS]));
+    
     return 0;
 }
