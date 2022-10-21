@@ -20,11 +20,11 @@ void validate_params(int argc, char *argv[])
 }
 
 // qsort requires parameters to be taken in as void *, we have to cast to char *
-int cmpstr_void(void const *avoid, void const *bvoid) { 
-    char const *a = (char const *)avoid;
-    char const *b = (char const *)bvoid;
-
-    return strcmp(b, a);
+int cmpstr_void(const void* voida, const void* voidb)
+{
+    const char* a = *(const char**)voida;
+    const char* b = *(const char**)voidb;
+    return strcmp(a,b);
 }
 
 void get_sorted_dir_entries(char* dir_name, struct array_list* entries) {
@@ -82,6 +82,8 @@ void print_directory_r(char* dir_name, int level) {
         if (type == TYPE_DIR) {
             // print recursively
             print_directory_r(entries->content[i], ++level);
+            --level;
+            chdir(".."); // if we go into this dir we need to exit if there are files following it
         } else {
             print_item_with_formatting(entries->content[i], level, TYPE_FILE);
         }
