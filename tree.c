@@ -131,8 +131,10 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
     {
         int file_size = get_entry_size(entries->content[i]);
         int type = get_entry_type(entries->content[i]);
-        if (strcmp(entries->content[i], "..") == 0 || strcmp(entries->content[i], ".") == 0)
+        if (strcmp(entries->content[i], "..") == 0 || strcmp(entries->content[i], ".") == 0) {
+            print_item_with_formatting(entries->content[i], level, TYPE_FILE, show_hidden, show_size, get_entry_size(entries->content[i]));
             continue;
+        }
         if (type == TYPE_DIR)
         {
             // print recursively
