@@ -157,5 +157,8 @@ int main(int argc, char *argv[])
     }
     print_directory_r(dir_name, 0, show_hidden, show_size, get_entry_size(dir_name));
     
+    // if we entered a directory recursvively then we need to go back up one directory
+    if (strcmp(dir_name, ".") != 0) chdir("..");
+    
     return 0;
 }
