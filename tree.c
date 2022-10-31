@@ -11,16 +11,7 @@
 #define TYPE_DIR 100
 #define TYPE_FILE 101
 
-void validate_params(int argc, char *argv[])
-{
-    if (argc < 2 || argv[DIR_NAME_POS] == NULL)
-    {
-        perror("Validate params");
-        exit(1);
-    }
-}
-
-void get_param_flags(char *dir_name, bool *show_hidden, bool *show_size, int argc, char *argv[])
+void get_param_flags(int *dir_name_pos, bool *show_hidden, bool *show_size, int argc, char *argv[])
 {
     // the first name should be a directory name
     for (int i = DIR_NAME_POS; i < argc; ++i) {
@@ -30,6 +21,9 @@ void get_param_flags(char *dir_name, bool *show_hidden, bool *show_size, int arg
         }
         else if (strcmp(tok, "-s") == 0) {
             *show_size = true;
+        } else if(tok != NULL) {
+            *dir_name_pos = i;
+            break;
         }
     }
 }
@@ -132,7 +126,7 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
         int file_size = get_entry_size(entries->content[i]);
         int type = get_entry_type(entries->content[i]);
         if (strcmp(entries->content[i], "..") == 0 || strcmp(entries->content[i], ".") == 0) {
-            print_item_with_formatting(entries->content[i], level, TYPE_FILE, show_hidden, show_size, get_entry_size(entries->content[i]));
+            //print_item_with_formatting(entries->content[i], level, TYPE_FILE, show_hidden, show_size, get_entry_size(entries->content[i]));
             continue;
         }
         if (type == TYPE_DIR)
@@ -152,11 +146,16 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
 
 int main(int argc, char *argv[])
 {
-    char *dir_name = NULL;
+    int dir_name_pos = -1;
+    char* dir_name;
     bool show_hidden = false, show_size = false;
-    validate_params(argc, argv);
-    get_param_flags(dir_name, &show_hidden, &show_size, argc, argv);
-    print_directory_r(argv[DIR_NAME_POS], 0, show_hidden, show_size, get_entry_size(argv[DIR_NAME_POS]));
+    get_param_flags(&dir_name_pos, &show_hidden, &show_size, argc, argv);
+    if (dir_name_pos > 0) {
+        dir_name = argv[dir_name_pos];
+    } else {
+        dir_name = ".";
+    }
+    print_directory_r(dir_name, 0, show_hidden, show_size, get_entry_size(dir_name));
     
     return 0;
 }
