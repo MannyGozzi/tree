@@ -147,18 +147,13 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
 int main(int argc, char *argv[])
 {
     int dir_name_pos = -1;
-    char* dir_name;
+    char* dir_name = NULL;
     bool show_hidden = false, show_size = false;
+    char start_dir[1024] = "";
+    getcwd(start_dir, 1024);
     get_param_flags(&dir_name_pos, &show_hidden, &show_size, argc, argv);
-    if (dir_name_pos > 0) {
-        dir_name = argv[dir_name_pos];
-    } else {
-        dir_name = ".";
-    }
-    print_directory_r(dir_name, 0, show_hidden, show_size, get_entry_size(dir_name));
-    
-    // if we entered a directory recursvively then we need to go back up one directory
-    if (strcmp(dir_name, ".") != 0) chdir("..");
-    
+    if (dir_name_pos != -1) dir_name = argv[dir_name_pos];
+    else dir_name = start_dir;
+    print_directory_r(dir_name, 0, show_hidden, show_size, get_entry_size(dir_name));    
     return 0;
 }
