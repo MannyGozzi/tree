@@ -14,14 +14,19 @@
 void get_param_flags(int *dir_name_pos, bool *show_hidden, bool *show_size, int argc, char *argv[])
 {
     // the first name should be a directory name
-    for (int i = DIR_NAME_POS; i < argc; ++i) {
-        char* tok = argv[i];
-        if (strcmp(tok, "-a") == 0) {
+    for (int i = DIR_NAME_POS; i < argc; ++i)
+    {
+        char *tok = argv[i];
+        if (strcmp(tok, "-a") == 0)
+        {
             *show_hidden = true;
         }
-        else if (strcmp(tok, "-s") == 0) {
+        else if (strcmp(tok, "-s") == 0)
+        {
             *show_size = true;
-        } else if(tok != NULL) {
+        }
+        else if (tok != NULL)
+        {
             *dir_name_pos = i;
             break;
         }
@@ -58,7 +63,7 @@ int get_entry_size(char *entry_name)
     {
         perror("lstat error");
         exit(1);
-    } 
+    }
     return (int) stat_buf.st_size;
 }
 
@@ -106,7 +111,8 @@ void print_item_with_formatting(char *item_name, int level, int type, bool show_
     }
 
     printf("%s", item_name);
-    if (show_size) printf(" [size: %d]", size);
+    if (show_size)
+        printf(" [size: %d]", size);
     // print size if requested
     printf("\n");
 }
@@ -125,8 +131,9 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
     {
         int file_size = get_entry_size(entries->content[i]);
         int type = get_entry_type(entries->content[i]);
-        if (strcmp(entries->content[i], "..") == 0 || strcmp(entries->content[i], ".") == 0) {
-            //print_item_with_formatting(entries->content[i], level, TYPE_FILE, show_hidden, show_size, get_entry_size(entries->content[i]));
+        if (strcmp(entries->content[i], "..") == 0 || strcmp(entries->content[i], ".") == 0)
+        {
+            // print_item_with_formatting(entries->content[i], level, TYPE_FILE, show_hidden, show_size, get_entry_size(entries->content[i]));
             continue;
         }
         if (type == TYPE_DIR)
@@ -147,13 +154,15 @@ void print_directory_r(char *dir_name, int level, bool show_hidden, bool show_si
 int main(int argc, char *argv[])
 {
     int dir_name_pos = -1;
-    char* dir_name = NULL;
+    char *dir_name = NULL;
     bool show_hidden = false, show_size = false;
     char start_dir[1024] = "";
     getcwd(start_dir, 1024);
     get_param_flags(&dir_name_pos, &show_hidden, &show_size, argc, argv);
-    if (dir_name_pos != -1) dir_name = argv[dir_name_pos];
-    else dir_name = start_dir;
-    print_directory_r(dir_name, 0, show_hidden, show_size, get_entry_size(dir_name));    
+    if (dir_name_pos != -1)
+        dir_name = argv[dir_name_pos];
+    else
+        dir_name = start_dir;
+    print_directory_r(dir_name, 0, show_hidden, show_size, get_entry_size(dir_name));
     return 0;
 }
